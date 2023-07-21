@@ -1,4 +1,4 @@
-import $ from "../jQuery.js";
+import $ from "./jQuery.js";
 
 /*!
  *

@@ -139,3 +139,5 @@ class MySelection {
     }
   };
 }
+
+export default new MySelection();
