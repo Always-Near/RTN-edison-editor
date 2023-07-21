@@ -22,29 +22,22 @@ class MySelection {
   };
 
   private saveSelectionV2 = (containerEl: Node): SavedSelection | undefined => {
-    if (
-      "selection" in document &&
-      "createTextRange" in document.body &&
-      typeof document.body.createTextRange === "function"
-    ) {
-      const { createRange } = document.selection as any;
-      const selectedTextRange = createRange();
-      const preSelectionTextRange = document.body.createTextRange();
-      preSelectionTextRange.moveToElementText(containerEl);
-      preSelectionTextRange.setEndPoint("EndToStart", selectedTextRange);
-      const start = preSelectionTextRange.text.length;
-      return {
-        start: start,
-        end: start + selectedTextRange.text.length,
-      };
-    }
+    const selectedTextRange = (document as any).selection.createRange();
+    const preSelectionTextRange = (document as any).body.createTextRange();
+    preSelectionTextRange.moveToElementText(containerEl);
+    preSelectionTextRange.setEndPoint("EndToStart", selectedTextRange);
+    const start = preSelectionTextRange.text.length;
+    return {
+      start: start,
+      end: start + selectedTextRange.text.length,
+    };
   };
 
   private saveSelection = (containerEl: Node | null) => {
     if (!containerEl) {
       return;
     }
-    if (window.getSelection && document.createRange) {
+    if ((window.getSelection as any) && (document.createRange as any)) {
       return this.saveSelectionV1(containerEl);
     } else if ("selection" in document) {
       return this.saveSelectionV2(containerEl);
@@ -100,24 +93,23 @@ class MySelection {
     containerEl: Node,
     savedSel: SavedSelection
   ) => {
-    if (
-      "createTextRange" in document.body &&
-      typeof document.body.createTextRange === "function"
-    ) {
-      const textRange = document.body.createTextRange();
-      textRange.moveToElementText(containerEl);
-      textRange.collapse(true);
-      textRange.moveEnd("character", savedSel.end);
-      textRange.moveStart("character", savedSel.start);
-      textRange.select();
-    }
+    const textRange = (document as any).body.createTextRange();
+    textRange.moveToElementText(containerEl);
+    textRange.collapse(true);
+    textRange.moveEnd("character", savedSel.end);
+    textRange.moveStart("character", savedSel.start);
+    textRange.select();
   };
 
   private restoreSelection = (
     containerEl: Node | null,
     savedSel: SavedSelection
   ) => {
-    if (containerEl && window.getSelection && document.createRange) {
+    if (
+      containerEl &&
+      (window.getSelection as any) &&
+      (document.createRange as any)
+    ) {
       return this.restoreSelectionV1(containerEl, savedSel);
     } else if (containerEl && "selection" in document) {
       return this.restoreSelectionV2(containerEl, savedSel);

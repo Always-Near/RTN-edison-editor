@@ -12,11 +12,8 @@ export function placeCaretAtEnd(el: HTMLElement | null) {
       sel.removeAllRanges();
       sel.addRange(range);
     }
-  } else if (
-    "createTextRange" in document.body &&
-    typeof document.body.createTextRange === "function"
-  ) {
-    const textRange = document.body.createTextRange();
+  } else if (typeof (document.body as any).createTextRange === "function") {
+    const textRange = (document.body as any).createTextRange();
     textRange.moveToElementText(el);
     textRange.collapse(false);
     textRange.select();
