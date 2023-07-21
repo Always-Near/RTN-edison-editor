@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta
+      hint="edo"
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no"
+    />
+    <style hint="edo">
+      html,
+      body.edo,
+      body.edo-composer,
+      pre,
+      xmp {
+        margin: 0 !important;
+        border: 0 !important;
+        width: initial !important;
+        -webkit-text-size-adjust: none;
+        font-family: -apple-system;
+        word-wrap: break-word !important;
+        overflow-wrap: break-word !important;
+        -webkit-nbsp-mode: space !important;
+        -webkit-tap-highlight-color: transparent !important;
+      }
+      .edo-transform {
+        transform-origin-x: 0px;
+        transform-origin-y: 0px;
+      }
+      .x-apple-signature {
+        margin-top: 15px;
+      }
+      body.edo-composer {
+        font-size: 17px;
+        color: inherit !important;
+        background-color: inherit !important;
+        background: inherit !important;
+        text-align: inherit !important;
+      }
+      .edo-composer br {
+        display: inherit;
+      }
+      .edo-composer pre br,
+      .edo-composer xmp br {
+        display: none;
+      }
+      .edo-composer div#edo-container {
+        min-height: 300px;
+        caret-color: #0097ff;
+        letter-spacing: 0.1;
+      }
+      .edo-composer div#edo-message,
+      .edo-composer div#edo-meta {
+        width: -webkit-calc(100vw - 30px);
+      }
+      .edo-composer img.edo-image,
+      img.fullwidth {
+        padding: 10px 2px;
+        max-width: -webkit-calc(100vw - 30px);
+        height: auto;
+      }
+      .edo-composer a {
+        color: #1f9aff;
+      }
+      #edo-signature img {
+        max-width: 90%;
+      }
+      * {
+        outline: 0px solid transparent;
+      }
+
+      .template-variable {
+        width: auto;
+        display: inline-block !important;
+        display: inline;
+        padding: 2px 6px 2px 6px;
+        margin: 1px 3px 1px 3px;
+        border-radius: 5px;
+        background-color: #0097ff;
+        color: white;
+        outline: 0px solid transparent;
+        font-family: UICTFontTextStyleBody;
+      }
+
+      .template-variable_focus {
+        background-color: white;
+        color: #4093f5;
+        box-shadow: 0 0 0 1pt #0097ff;
+      }
+
+      @media (prefers-color-scheme: dark) {
+        .template-variable_focus {
+          background-color: #111112;
+        }
+      }
+
+      /*  dark mode version of pre-defined rich text color */
+      @media (prefers-color-scheme: dark) {
+        .edo-composer div#edo-container {
+          color: rgb(234, 234, 234) !important;
+          caret-color: #1f9aff;
+        }
+        font[color="#000000"] {
+          color: rgb(234, 234, 234) !important;
+        }
+        font[color="#666666"] {
+          color: rgb(234, 234, 234) !important;
+        }
+        font[color="#B3B3B3"] {
+          color: rgb(179, 179, 179) !important;
+        }
+        font[color="#9D0A0C"] {
+          color: rgb(234, 179, 181) !important;
+        }
+        font[color="#C25118"] {
+          color: rgb(234, 213, 156) !important;
+        }
+        font[color="#F99D27"] {
+          color: rgb(234, 161, 66) !important;
+        }
+        font[color="#808819"] {
+          color: rgb(234, 234, 154) !important;
+        }
+        font[color="#1C4C34"] {
+          color: rgb(220, 234, 234) !important;
+        }
+        font[color="#16787C"] {
+          color: rgb(175, 234, 234) !important;
+        }
+        font[color="#0E64AF"] {
+          color: rgb(172, 234, 234) !important;
+        }
+        font[color="#643592"] {
+          color: rgb(234, 224, 234) !important;
+        }
+        font[color="#A9209C"] {
+          color: rgb(234, 178, 234) !important;
+        }
+      }
+    </style>
+  </head>
+
+  <body class="edo-composer">
+    <div
+      id="edo-container"
+      spellcheck="true"
+      contenteditable="true"
+      onPaste="detectPaste(event, this)"
+      style="outline: none; padding: 15px !important"
+    ></div>
+  </body>
+</html>
