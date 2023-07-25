@@ -1,7 +1,7 @@
 {
   "name": "rtn-edison-editor",
   "version": "0.0.1",
-  "description": "A full fledged React Native Rich Text editor based on quill.js",
+  "description": "A full fledged React Native Rich Text editor",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
   "scripts": {

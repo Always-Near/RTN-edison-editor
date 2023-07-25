@@ -279,7 +279,7 @@ class RNDraftView extends Component<PropTypes, DraftViewState> {
   };
 
   private executeScript = (
-    functionName: typeof InjectScriptName[keyof typeof InjectScriptName],
+    functionName: (typeof InjectScriptName)[keyof typeof InjectScriptName],
     parameter?: string
   ) => {
     this.doSomethingAfterMounted(`executeScript-${functionName}`, () => {
@@ -310,7 +310,7 @@ class RNDraftView extends Component<PropTypes, DraftViewState> {
         type,
         data,
       }: {
-        type: typeof EventName[keyof typeof EventName];
+        type: (typeof EventName)[keyof typeof EventName];
         data: any;
       } = JSON.parse(event.nativeEvent.data);
       if (type === EventName.IsMounted) {
@@ -502,7 +502,7 @@ class RNDraftView extends Component<PropTypes, DraftViewState> {
 
   shouldForceDarkOn = () => {
     const { isDarkMode } = this.props;
-    if (Platform.OS === "android" && Platform.Version >= 29) {
+    if (Platform.OS === "android" && Number(Platform.Version) >= 29) {
       return false;
     }
     return isDarkMode;
