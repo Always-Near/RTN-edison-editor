@@ -1,4 +1,4 @@
-import { FormatType, EventName } from "../constants";
+import { FormatType } from "../constants";
 import EdoEditor from "./edo_editor";
 import $ from "./jQuery.js";
 import {
@@ -11,7 +11,8 @@ import { detectPaste } from "./utils/image-utils";
 // import { placeCaretAtEnd } from "./utils/cursor-utils";
 import Theme from "./utils/theme-util";
 
-let shouldInitDarkMode = true;
+let shouldInitDarkMode = false;
+const DefaultFontSize = 16;
 
 $(document).ready(function () {
   // clean style on <html> tag which merged from inner <html> tag of origin mail while forwarding
@@ -108,16 +109,45 @@ window.format = (format: FormatType) => {
   }
 };
 
-window.addImage = () => {};
-window.addLink = () => {};
-window.setDefaultValue = () => {};
-window.setStyle = () => {};
-window.setIsDarkMode = () => {};
-window.setFontSize = () => {};
-window.setPadding = () => {};
-window.setEditorPlaceholder = () => {};
+window.addLink = (json: string) => {
+  const { url, text }: { url: string; text: string } = JSON.parse(json);
+  EdoEditor.insertLink(url, text);
+};
 
-window.focusTextEditor = () => {};
-window.blurTextEditor = () => {};
+window.addImage = (src: string) => {
+  EdoEditor.insertImage(src, "");
+};
+
+window.setDefaultValue = (html: string) => {
+  EdoEditor.setHTML(decodeURIComponent(html));
+};
+
+window.setStyle = (customCSS: string) => {
+  EdoEditor.setCustomCSS(customCSS);
+};
+
+window.setFontSize = (size: string) => {
+  $("#edo-container").css("font-size", parseInt(size) || DefaultFontSize);
+};
+
+window.setPadding = (padding: string) => {
+  $("#edo-container").css("padding", padding);
+};
+
+window.setIsDarkMode = (isDarkMode: string) => {
+  shouldInitDarkMode = isDarkMode === "true";
+};
+
+window.setEditorPlaceholder = (placehold: string) => {
+  EdoEditor.setPlaceholder(placehold);
+};
+
+// window.focusTextEditor = () => {
+//   EdoEditor.focusEditor();
+// };
+
+window.blurTextEditor = () => {
+  EdoEditor.blurEditor();
+};
 
 window.disableInputImage = () => {};

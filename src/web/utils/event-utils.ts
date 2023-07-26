@@ -1,4 +1,4 @@
-import { EventName } from "../../constants";
+import { EventName, FormatType } from "../../constants";
 
 export const postMessage = (
   type: (typeof EventName)[keyof typeof EventName],
@@ -47,6 +47,41 @@ export const onContentChange = () => {
   if (pos) {
     postMessage(EventName.EditPosition, pos);
   }
+};
+
+export const onActiveStyleChange = (styles: string[]) => {
+  const formats: FormatType[] = [];
+  styles.forEach((s) => {
+    if (s === "bold") {
+      formats.push("Bold");
+      return;
+    }
+    if (s === "italic") {
+      formats.push("Italic");
+      return;
+    }
+    if (s === "strikeThrough") {
+      formats.push("Strikethrough");
+      return;
+    }
+    if (s === "underline") {
+      formats.push("Underline");
+      return;
+    }
+    if (s === "orderedList") {
+      formats.push("OrderedList");
+      return;
+    }
+    if (s === "unorderedList") {
+      formats.push("UnorderedList");
+      return;
+    }
+    if (s === "backgroundColor") {
+      formats.push(`BackgroundColor-yellow`);
+      return;
+    }
+  });
+  postMessage(EventName.ActiveStyleChange, formats);
 };
 
 export const onFocus = () => {

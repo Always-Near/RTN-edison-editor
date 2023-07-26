@@ -1,5 +1,5 @@
 import $ from "./jQuery.js";
-
+import { onActiveStyleChange } from "./utils/event-utils";
 /*!
  *
  * ZSSRichTextEditor v0.5.2
@@ -343,13 +343,13 @@ edo_editor.getSelectedNode = function () {
 edo_editor.setBold = function () {
   document.execCommand("bold", false, null);
   // fixed EC-6404. Disable callback after execCommand, button background color is toggled directly in native code.
-  //    edo_editor.enabledEditingItems();
+  edo_editor.enabledEditingItems();
 };
 
 edo_editor.setItalic = function () {
   document.execCommand("italic", false, null);
   // fixed EC-6404. Disable callback after execCommand, button background color is toggled directly in native code.
-  //    edo_editor.enabledEditingItems();
+  edo_editor.enabledEditingItems();
 };
 
 edo_editor.setSubscript = function () {
@@ -365,13 +365,13 @@ edo_editor.setSuperscript = function () {
 edo_editor.setStrikeThrough = function () {
   document.execCommand("strikeThrough", false, null);
   // fixed EC-6381. Disable callback after execCommand, background color is directly toggled in native.
-  //    edo_editor.enabledEditingItems();
+  edo_editor.enabledEditingItems();
 };
 
 edo_editor.setUnderline = function () {
   document.execCommand("underline", false, null);
   // fixed EC-6381. Disable callback after execCommand, background color is directly toggled in native.
-  //    edo_editor.enabledEditingItems();
+  edo_editor.enabledEditingItems();
 };
 
 edo_editor.setBlockquote = function () {
@@ -602,7 +602,7 @@ edo_editor.setFontSize = function (fontSize) {
 edo_editor.setTextColor = function (color) {
   //    edo_editor.restoreRange();
   document.execCommand("foreColor", false, color);
-  //edo_editor.enabledEditingItems();
+  edo_editor.enabledEditingItems();
   // document.execCommand("removeFormat", false, "foreColor"); // Removes just foreColor
 };
 
@@ -720,6 +720,12 @@ edo_editor.quickLink = function () {
 
 edo_editor.prepareInsert = function () {
   edo_editor.backupRange();
+};
+
+edo_editor.insertImage = function (url, alt) {
+  edo_editor.restoreRange();
+  var html = `<img src="${url}" alt="${alt}" style='width:100%; max-width:600px; height:auto;'/>`;
+  edo_editor.insertHTML(html);
 };
 
 edo_editor.setHTML = function (html) {
@@ -871,9 +877,7 @@ edo_editor.enabledEditingItems = function (e) {
 
   // start callback
   if (items.length > 0) {
-    if (window.ReactNativeWebView) {
-      window.ReactNativeWebView.postMessage(items.join(",,"));
-    }
+    onActiveStyleChange(items);
   } else {
     console.log("items count == 0, will not callback.");
   }
