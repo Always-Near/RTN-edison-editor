@@ -22,7 +22,7 @@ import { EventName, FormatType } from "./constants";
 export type { FormatType } from "./constants";
 
 class Variables {
-  static readonly packageName = "rn-edison-editor";
+  static readonly packageName = "rtn-edison-editor";
   static readonly draftJsFileTargetPath = `file://${RNFS.CachesDirectoryPath}/draftjs.html`;
   static copyFinish = false;
   static draftJsFilePath = Variables.draftJsFileTargetPath;
