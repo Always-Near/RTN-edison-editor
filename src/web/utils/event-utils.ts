@@ -49,6 +49,21 @@ export const onContentChange = () => {
   }
 };
 
+function to16(str: number) {
+  const str16 = "00" + str.toString(16);
+  return str16.substring(str16.length - 2);
+}
+
+const formatColor = (color: string) => {
+  if (color.startsWith("#")) {
+    return color;
+  }
+  const s = color.split("(")[1];
+  const ns = s.substring(0, s.length - 1).split(",");
+  const [r, g, b, a] = ns.map((n) => +n.trim());
+  return `#${to16(r)}${to16(g)}${to16(b)}`;
+};
+
 export const onActiveStyleChange = (styles: string[]) => {
   const formats: FormatType[] = [];
   styles.forEach((s) => {
@@ -78,6 +93,16 @@ export const onActiveStyleChange = (styles: string[]) => {
     }
     if (s === "backgroundColor") {
       formats.push(`BackgroundColor-yellow`);
+      return;
+    }
+    if (s.startsWith("fontSize:")) {
+      const size = s.replace("fontSize:", "");
+      formats.push(`Size-${size}` as const);
+      return;
+    }
+    if (s.startsWith("textColor:")) {
+      const color = s.replace("textColor:", "");
+      formats.push(`Color-${formatColor(color)}` as const);
       return;
     }
   });
