@@ -11,18 +11,12 @@ import { detectPaste } from "./utils/image-utils";
 // import { placeCaretAtEnd } from "./utils/cursor-utils";
 import Theme from "./utils/theme-util";
 
-let shouldInitDarkMode = false;
 const DefaultFontSize = 16;
 
 $(document).ready(function () {
   // clean style on <html> tag which merged from inner <html> tag of origin mail while forwarding
   // should do this on document-ready (rather than body-onload) to avoid screen flashing
   $("html").removeAttr("style");
-
-  // apply dark mode style before image downloaded
-  if (shouldInitDarkMode) {
-    Theme.createDarkModeColorMappingCSS();
-  }
   isMounted();
 });
 
@@ -135,7 +129,13 @@ window.setPadding = (padding: string) => {
 };
 
 window.setIsDarkMode = (isDarkMode: string) => {
-  shouldInitDarkMode = isDarkMode === "true";
+  // apply dark mode style before image downloaded
+  if (isDarkMode === "true") {
+    document.body.classList.add("edison-dark");
+    Theme.createDarkModeColorMappingCSS();
+  } else {
+    document.body.classList.remove("edison-dark");
+  }
 };
 
 window.setEditorPlaceholder = (placehold: string) => {

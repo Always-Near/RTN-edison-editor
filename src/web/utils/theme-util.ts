@@ -91,7 +91,7 @@ class Theme {
       const [r, g, b, a] = RGBColor(color);
       const darkModeColor = reversedColor(r, g, b, "color");
       const colorCSSSelector =
-        ".edo-dark-mode-override-color-" + r + "-" + g + "-" + b;
+        ".edison-dark .edo-dark-mode-override-color-" + r + "-" + g + "-" + b;
       const colorCSSContent = " { color: " + darkModeColor + " !important; }";
       darkModeColorMappingCSS += colorCSSSelector + colorCSSContent + "\\n";
     });
@@ -100,7 +100,7 @@ class Theme {
       const [r, g, b, a] = RGBColor(color);
       const darkModeColor = reversedColor(r, g, b, "background-color");
       const colorCSSSelector =
-        ".edo-dark-mode-override-bgcolor-" + r + "-" + g + "-" + b;
+        ".edison-dark .edo-dark-mode-override-bgcolor-" + r + "-" + g + "-" + b;
       const colorCSSContent =
         " { background-color: " + darkModeColor + " !important; }";
       darkModeColorMappingCSS += colorCSSSelector + colorCSSContent + "\\n";
@@ -109,14 +109,7 @@ class Theme {
     const style = document.createElement("style");
     style.id = "edo-dark-mode-color-mapping";
     style.type = "text/css";
-    const headerOfDarkModeMediaQuery =
-      "@media (prefers-color-scheme: dark) {\\n";
-    const footerOfDarkModeMediaQuery = "}";
-    const styleNodeContent =
-      headerOfDarkModeMediaQuery +
-      darkModeColorMappingCSS +
-      footerOfDarkModeMediaQuery;
-    style.appendChild(document.createTextNode(styleNodeContent));
+    style.appendChild(document.createTextNode(darkModeColorMappingCSS));
 
     const head = document.head;
     head.appendChild(style);
