@@ -114,6 +114,7 @@ window.addImage = (src: string) => {
 
 window.setDefaultValue = (html: string) => {
   EdoEditor.setHTML(decodeURIComponent(html));
+  Theme.applyDark();
 };
 
 window.setStyle = (customCSS: string) => {
@@ -130,12 +131,7 @@ window.setPadding = (padding: string) => {
 
 window.setIsDarkMode = (isDarkMode: string) => {
   // apply dark mode style before image downloaded
-  if (isDarkMode === "true") {
-    document.body.classList.add("edison-dark");
-    Theme.createDarkModeColorMappingCSS();
-  } else {
-    document.body.classList.remove("edison-dark");
-  }
+  Theme.setDark(isDarkMode === "true");
 };
 
 window.setEditorPlaceholder = (placehold: string) => {

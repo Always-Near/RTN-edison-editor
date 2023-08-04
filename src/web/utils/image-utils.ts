@@ -59,7 +59,7 @@ export function detectPaste() {
       parent.insertBefore(newlineBefore, insertedImg);
       window.location.href = `addattachment:${insertedImg.getAttribute("src")}`;
     }
-    if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
+    if (document.body.classList.contains("edison-dark")) {
       Theme.applyDarkModeInDraft();
     }
   });

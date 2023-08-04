@@ -36,10 +36,25 @@ function RGBColor(color: string) {
 }
 
 class Theme {
+  private isDark = false;
   private foregroundColorSet = new Set<string>();
   private backgroundColorSet = new Set<string>();
 
-  createDarkModeColorMappingCSS = () => {
+  setDark = (isDark: boolean) => {
+    this.isDark = isDark;
+    this.applyDark();
+  };
+
+  applyDark = () => {
+    if (this.isDark) {
+      this.createDarkModeColorMappingCSS();
+      document.body.classList.add("edison-dark");
+    } else {
+      document.body.classList.remove("edison-dark");
+    }
+  };
+
+  private createDarkModeColorMappingCSS = () => {
     this.foregroundColorSet = new Set();
     this.backgroundColorSet = new Set();
     const existingDarkModeStyleElement = document.getElementById(
@@ -90,20 +105,15 @@ class Theme {
     this.foregroundColorSet.forEach((color) => {
       const [r, g, b, a] = RGBColor(color);
       const darkModeColor = reversedColor(r, g, b, "color");
-      const colorCSSSelector =
-        ".edison-dark .edo-dark-mode-override-color-" + r + "-" + g + "-" + b;
-      const colorCSSContent = " { color: " + darkModeColor + " !important; }";
-      darkModeColorMappingCSS += colorCSSSelector + colorCSSContent + "\\n";
+      darkModeColorMappingCSS += `.edison-dark .edo-dark-mode-override-color-${r}-${g}-${b} { color: ${darkModeColor} !important; }
+      `;
     });
 
     this.backgroundColorSet.forEach((color) => {
       const [r, g, b, a] = RGBColor(color);
       const darkModeColor = reversedColor(r, g, b, "background-color");
-      const colorCSSSelector =
-        ".edison-dark .edo-dark-mode-override-bgcolor-" + r + "-" + g + "-" + b;
-      const colorCSSContent =
-        " { background-color: " + darkModeColor + " !important; }";
-      darkModeColorMappingCSS += colorCSSSelector + colorCSSContent + "\\n";
+      darkModeColorMappingCSS += `.edison-dark .edo-dark-mode-override-bgcolor-${r}-${g}-${b} { background-color: ${darkModeColor} !important; }
+      `;
     });
 
     const style = document.createElement("style");
