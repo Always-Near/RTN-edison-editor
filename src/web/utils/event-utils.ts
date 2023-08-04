@@ -137,3 +137,9 @@ export const onFocus = () => {
 export const onBlur = () => {
   postMessage(EventName.OnBlur, true);
 };
+
+export const onPastedImage = (src: string | null) => {
+  if (src) {
+    postMessage(EventName.OnPastedImage, src);
+  }
+};

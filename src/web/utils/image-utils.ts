@@ -1,3 +1,4 @@
+import { onPastedImage } from "./event-utils";
 import Theme from "./theme-util";
 
 function imageElements() {
@@ -57,7 +58,9 @@ export function detectPaste() {
       const parent = insertedImg.parentNode!;
       const newlineBefore = document.createElement("br");
       parent.insertBefore(newlineBefore, insertedImg);
-      window.location.href = `addattachment:${insertedImg.getAttribute("src")}`;
+      const src = insertedImg.getAttribute("src");
+      window.location.href = `addattachment:${src}`;
+      onPastedImage(src);
     }
     if (document.body.classList.contains("edison-dark")) {
       Theme.applyDarkModeInDraft();
