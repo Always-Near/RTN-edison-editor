@@ -2,6 +2,7 @@ import { FormatType } from "../constants";
 import EdoEditor from "./edo_editor";
 import $ from "./jQuery.js";
 import {
+  flagContentHasSet,
   isMounted,
   onBlur,
   onContentChange,
@@ -115,6 +116,9 @@ window.addImage = (src: string) => {
 window.setDefaultValue = (html: string) => {
   EdoEditor.setHTML(decodeURIComponent(html));
   Theme.applyDark();
+  setTimeout(() => {
+    flagContentHasSet();
+  }, 300);
 };
 
 window.setStyle = (customCSS: string) => {

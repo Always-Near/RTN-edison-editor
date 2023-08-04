@@ -39,9 +39,30 @@ const getSelectionPosition = () => {
   }
 };
 
+let contentIsChangeFlag = false;
+let contentHasSetFlag = false;
+
+export const flagContentHasSet = () => {
+  contentHasSetFlag = true;
+};
+
+const checkContentIsChange = () => {
+  if (contentIsChangeFlag) {
+    return;
+  }
+  if (!contentHasSetFlag) {
+    return;
+  }
+  contentIsChangeFlag = true;
+  postMessage(EventName.ContentChange, true);
+};
+
 export const onContentChange = () => {
-  postMessage(EventName.ContentChange);
-  postMessage(EventName.SizeChange, document.body.offsetHeight);
+  checkContentIsChange();
+  postMessage(
+    EventName.EditorChange,
+    document.getElementById("edo-container")?.innerHTML
+  );
   postMessage(EventName.SizeChange, document.body.offsetHeight);
   const pos = getSelectionPosition();
   if (pos) {
