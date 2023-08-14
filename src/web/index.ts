@@ -1,13 +1,7 @@
 import { FormatType } from "../constants";
 import EdoEditor from "./edo_editor";
 import $ from "./jQuery.js";
-import {
-  flagContentHasSet,
-  isMounted,
-  onBlur,
-  onContentChange,
-  onFocus,
-} from "./utils/event-utils";
+import EventUtils from "./utils/event-utils";
 import { detectPaste } from "./utils/image-utils";
 // import { placeCaretAtEnd } from "./utils/cursor-utils";
 import Theme from "./utils/theme-util";
@@ -18,7 +12,7 @@ $(document).ready(function () {
   // clean style on <html> tag which merged from inner <html> tag of origin mail while forwarding
   // should do this on document-ready (rather than body-onload) to avoid screen flashing
   $("html").removeAttr("style");
-  isMounted();
+  EventUtils.isMounted();
 });
 
 // when has smartReply
@@ -36,7 +30,7 @@ document.body.onload = () => {
     subtree: true, // 是否将观察器应用于该节点的所有后代节点
   };
   const mutationObserver = new MutationObserver(function (mutations) {
-    onContentChange();
+    EventUtils.onContentChange();
   });
   mutationObserver.observe(containerBox, option);
 
@@ -45,10 +39,10 @@ document.body.onload = () => {
   });
 
   window.onfocus = () => {
-    onFocus();
+    EventUtils.onFocus();
   };
   window.onblur = () => {
-    onBlur();
+    EventUtils.onBlur();
   };
 
   EdoEditor.init();
@@ -117,7 +111,7 @@ window.setDefaultValue = (html: string) => {
   EdoEditor.setHTML(decodeURIComponent(html));
   Theme.applyDark();
   setTimeout(() => {
-    flagContentHasSet();
+    EventUtils.flagContentHasSet();
   }, 300);
 };
 

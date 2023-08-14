@@ -1,5 +1,5 @@
 import $ from "./jQuery.js";
-import { onActiveStyleChange } from "./utils/event-utils";
+import EventUtils from "./utils/event-utils";
 /*!
  *
  * ZSSRichTextEditor v0.5.2
@@ -877,7 +877,7 @@ edo_editor.enabledEditingItems = function (e) {
 
   // start callback
   if (items.length > 0) {
-    onActiveStyleChange(items);
+    EventUtils.onActiveStyleChange(items);
   } else {
     console.log("items count == 0, will not callback.");
   }
