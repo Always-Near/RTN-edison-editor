@@ -1,6 +1,7 @@
 import { FormatType } from "../../constants";
 import EdoEditor from "../edo_editor";
 import { formatColor } from "./base-utils";
+import ThemeUtils from "./theme-util";
 
 class StyleUtils {
   private activeStyles: FormatType[] = [];
@@ -96,7 +97,10 @@ class StyleUtils {
       }
       if (s.startsWith("textColor:")) {
         const color = s.replace("textColor:", "");
-        formats.push(`Color-${formatColor(color)}` as const);
+        const format = formatColor(color).toLocaleLowerCase();
+        if (format != ThemeUtils.getDefaultColor()) {
+          formats.push(`Color-${format}` as const);
+        }
         return;
       }
     });

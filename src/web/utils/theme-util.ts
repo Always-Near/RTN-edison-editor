@@ -45,6 +45,15 @@ class Theme {
     this.applyDark();
   };
 
+  getDark = () => {
+    return this.isDark;
+  };
+
+  getDefaultColor = () => {
+    // reversedColor(0, 0, 0) and #000000
+    return this.isDark ? "#eaeaea" : "#000000";
+  };
+
   applyDark = () => {
     if (this.isDark) {
       this.createDarkModeColorMappingCSS();
