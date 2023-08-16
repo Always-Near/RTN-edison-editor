@@ -53,10 +53,77 @@ var predefinedVariables = {
 
 edo_editor.placeholder = "Placeholder";
 
+edo_editor.zeroWidthSpaceNode = null;
+edo_editor.zeroWidthSpaceCharacter = "\u200b"; // 8203 or 200b
+
 edo_editor.setPredefinedVariables = function (jsonStr) {
   var obj = eval(jsonStr);
   predefinedVariables = obj;
 };
+
+/**
+ * This is a workaround for a bug in WebKit, maybe relate to https://bugs.webkit.org/show_bug.cgi?id=158115
+ * Fix bug: unable to enter use both underline and strikeThrough formats
+ */
+function fixUnderlineStrikeThroughStyleLoss(commandId, value) {
+  var sel = window.getSelection();
+  if (edo_editor.zeroWidthSpaceNode !== null) {
+    edo_editor.zeroWidthSpaceNode = null;
+  } else {
+    document.execCommand(
+      "InsertText",
+      false,
+      edo_editor.zeroWidthSpaceCharacter
+    );
+  }
+
+  sel.modify("extend", "backward", "character");
+  document.execCommand(commandId, false, value);
+  sel.modify("move", "forward", "character");
+
+  var zeroWidthSpaceNode = sel.anchorNode;
+  // prevents zeroWidthSpaceNode from being removed immediately in 'selectionchange' event
+  setTimeout(function () {
+    edo_editor.zeroWidthSpaceNode = zeroWidthSpaceNode;
+  }, 0);
+}
+
+function removeZeroWidthSpace() {
+  if (edo_editor.zeroWidthSpaceNode == null) return;
+  var node = edo_editor.zeroWidthSpaceNode;
+  if (
+    node.deleteData &&
+    node.parentNode &&
+    node.length &&
+    node.textContent &&
+    node.textContent[0] === edo_editor.zeroWidthSpaceCharacter
+  ) {
+    if (node.nodeType === Node.TEXT_NODE && 1 === node.length) {
+      let current = node;
+      for (
+        ;
+        current.parentNode && !current.previousSibling && !current.nextSibling;
+
+      ) {
+        const parentNode = current.parentNode;
+        if (
+          parentNode.nodeType === Node.ELEMENT_NODE &&
+          true === parentNode.contentEditable
+        )
+          break;
+
+        current = parentNode;
+      }
+      current.remove();
+    } else {
+      node.deleteData(0, 1);
+    }
+  } else {
+    console.log("Error: something went wrong with remove zero-width-space.");
+  }
+
+  edo_editor.zeroWidthSpaceNode = null;
+}
 
 /**
  * The initializer function that must be called onLoad
@@ -126,6 +193,7 @@ edo_editor.init = function () {
     if (edo_editor.isEditingSnippet) {
       edo_editor.checkVariableFocusStatus();
     }
+    removeZeroWidthSpace();
   });
 
   // Make sure that when we tap anywhere in the document we focus on the editor
@@ -210,7 +278,10 @@ edo_editor.init = function () {
     // for case that variable is at the very beginning of line
     var focusNode = window.getSelection().focusNode;
     var focusOffset = window.getSelection().focusOffset;
-    if (focusNode.textContent.charCodeAt(focusOffset) == 8203) {
+    if (
+      focusNode.length > 1 &&
+      focusNode.textContent.charCodeAt(focusOffset) == 8203
+    ) {
       // last char is ZWS
       focusNode.textContent =
         focusNode.textContent.substring(0, focusOffset) +
@@ -363,14 +434,20 @@ edo_editor.setSuperscript = function () {
 };
 
 edo_editor.setStrikeThrough = function () {
-  document.execCommand("strikeThrough", false, null);
   // fixed EC-6381. Disable callback after execCommand, background color is directly toggled in native.
+  // edo_editor.enabledEditingItems();
+  window.getSelection().isCollapsed
+    ? fixUnderlineStrikeThroughStyleLoss("strikeThrough")
+    : document.execCommand("strikeThrough", false);
   edo_editor.enabledEditingItems();
 };
 
 edo_editor.setUnderline = function () {
-  document.execCommand("underline", false, null);
   // fixed EC-6381. Disable callback after execCommand, background color is directly toggled in native.
+  // edo_editor.enabledEditingItems();
+  window.getSelection().isCollapsed
+    ? fixUnderlineStrikeThroughStyleLoss("underline")
+    : document.execCommand("underline", false);
   edo_editor.enabledEditingItems();
 };
 
@@ -622,6 +699,7 @@ edo_editor.setBackgroundColor = function (color) {
     window.getSelection().removeAllRanges();
     window.getSelection().addRange(range);
   }
+  edo_editor.enabledEditingItems();
 };
 
 edo_editor.insertLink = function (url, title) {

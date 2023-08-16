@@ -1,5 +1,6 @@
-import { EventName, FormatType } from "../../constants";
-import { debounce, formatColor } from "./base-utils";
+import { EventName } from "../../constants";
+import { debounce } from "./base-utils";
+import StyleUtils from "./style-utils";
 
 class EventUtils {
   private postMessage = (
@@ -84,56 +85,11 @@ class EventUtils {
     this.onContentChangeDebounce();
   };
 
-  private activeStyleString = "";
-
   onActiveStyleChange = (styles: string[]) => {
-    const formats: FormatType[] = [];
-    styles.forEach((s) => {
-      if (s === "bold") {
-        formats.push("Bold");
-        return;
-      }
-      if (s === "italic") {
-        formats.push("Italic");
-        return;
-      }
-      if (s === "strikeThrough") {
-        formats.push("Strikethrough");
-        return;
-      }
-      if (s === "underline") {
-        formats.push("Underline");
-        return;
-      }
-      if (s === "orderedList") {
-        formats.push("OrderedList");
-        return;
-      }
-      if (s === "unorderedList") {
-        formats.push("UnorderedList");
-        return;
-      }
-      if (s === "backgroundColor") {
-        formats.push(`BackgroundColor-yellow`);
-        return;
-      }
-      if (s.startsWith("fontSize:")) {
-        const size = s.replace("fontSize:", "");
-        formats.push(`Size-${size}` as const);
-        return;
-      }
-      if (s.startsWith("textColor:")) {
-        const color = s.replace("textColor:", "");
-        formats.push(`Color-${formatColor(color)}` as const);
-        return;
-      }
-    });
-    const activeStyleString = formats.join("|");
-    if (activeStyleString === this.activeStyleString) {
-      return;
+    const formatStyles = StyleUtils.getActiveStyle(styles);
+    if (formatStyles) {
+      this.postMessage(EventName.ActiveStyleChange, formatStyles);
     }
-    this.activeStyleString = activeStyleString;
-    this.postMessage(EventName.ActiveStyleChange, formats);
   };
 
   onPastedImage = (src: string | null) => {

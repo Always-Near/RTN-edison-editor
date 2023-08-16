@@ -3,6 +3,7 @@ import EdoEditor from "./edo_editor";
 import $ from "./jQuery.js";
 import EventUtils from "./utils/event-utils";
 import { detectPaste } from "./utils/image-utils";
+import StyleUtils from "./utils/style-utils";
 // import { placeCaretAtEnd } from "./utils/cursor-utils";
 import Theme from "./utils/theme-util";
 
@@ -49,53 +50,7 @@ document.body.onload = () => {
 };
 
 window.format = (format: FormatType) => {
-  switch (format) {
-    case "CLEAR":
-      EdoEditor.removeFormating();
-      break;
-    case "Bold":
-      EdoEditor.setBold();
-      break;
-    case "Italic":
-      EdoEditor.setItalic();
-      break;
-    case "Strikethrough":
-      EdoEditor.setStrikeThrough();
-      break;
-    case "Underline":
-      EdoEditor.setUnderline();
-      break;
-    case "IndentIncrease":
-      EdoEditor.setIndent();
-      break;
-    case "IndentDecrease":
-      EdoEditor.setOutdent();
-      break;
-    case "UnorderedList":
-      EdoEditor.setUnorderedList();
-      break;
-    case "OrderedList":
-      EdoEditor.setOrderedList();
-      break;
-    default:
-      break;
-  }
-  if (format.startsWith("Color-")) {
-    const color = format.replace("Color-", "");
-    EdoEditor.setTextColor(color);
-  }
-  if (format.startsWith("Size-")) {
-    const size = format.replace("Size-", "");
-    EdoEditor.setFontSize(size);
-  }
-  if (format.startsWith("Font-")) {
-    const font = format.replace("Font-", "");
-    EdoEditor.setFontFamily(font);
-  }
-  if (format.startsWith("BackgroundColor-")) {
-    const color = format.replace("BackgroundColor-", "");
-    EdoEditor.setBackgroundColor(color);
-  }
+  StyleUtils.setActiveStyle(format);
 };
 
 window.addLink = (json: string) => {
