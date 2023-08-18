@@ -363,6 +363,10 @@ class RNDraftView extends Component<PropTypes, DraftViewState> {
         this.afterFocusLeaveEditor(data);
         return;
       }
+      if (type === EventName.Debugger) {
+        console.log(data);
+        return;
+      }
     } catch (err) {}
   };
 

@@ -7,13 +7,17 @@ class EventUtils {
     type: (typeof EventName)[keyof typeof EventName],
     data?: any
   ) => {
-    if (window.ReactNativeWebView) {
-      window.ReactNativeWebView.postMessage(
-        JSON.stringify({
-          type,
-          data,
-        })
-      );
+    try {
+      if (window.ReactNativeWebView) {
+        window.ReactNativeWebView.postMessage(
+          JSON.stringify({
+            type,
+            data,
+          })
+        );
+      }
+    } catch (err: any) {
+      this.log("Error:" + err.message);
     }
   };
 
@@ -96,6 +100,10 @@ class EventUtils {
     if (src) {
       postMessage(EventName.OnPastedImage, src);
     }
+  };
+
+  log = (message: string) => {
+    this.postMessage(EventName.Debugger, message);
   };
 }
 

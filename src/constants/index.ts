@@ -9,6 +9,7 @@ export const EventName = {
   OnBlur: "onBlur",
   OnPastedImage: "onPastedImage",
   AfterFocusLeaveEditor: "afterFocusLeaveEditor",
+  Debugger: "debugger",
 } as const;
 
 export type FormatType =
