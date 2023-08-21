@@ -343,11 +343,6 @@ class RNDraftView extends Component<PropTypes, DraftViewState> {
         return;
       }
       if (type === EventName.OnFocus && onFocus) {
-        if (Platform.OS === "android") {
-          // android must focus webview first
-          this.webViewRef.current?.requestFocus();
-          this.executeScript(InjectScriptName.FocusTextEditor);
-        }
         onFocus();
         return;
       }
