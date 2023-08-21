@@ -91,9 +91,9 @@ window.setEditorPlaceholder = (placehold: string) => {
   EdoEditor.setPlaceholder(placehold);
 };
 
-// window.focusTextEditor = () => {
-//   EdoEditor.focusEditor();
-// };
+window.focusTextEditor = () => {
+  EdoEditor.focusEditorBeginning();
+};
 
 window.blurTextEditor = () => {
   EdoEditor.blurEditor();

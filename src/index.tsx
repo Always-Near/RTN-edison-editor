@@ -488,6 +488,15 @@ class RNDraftView extends Component<PropTypes, DraftViewState> {
     }
   };
 
+  focusAfterStyleModal = () => {
+    this.doSomethingAfterMounted(
+      `focusAfterStyleModalAndShowKeyboard`,
+      async () => {
+        await this.focusSpecialHandleForSpecialPlatform();
+      }
+    );
+  };
+
   setStyle = (style: FormatType) => {
     this.executeScript(InjectScriptName.Format, style);
   };
