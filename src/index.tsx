@@ -78,6 +78,7 @@ copyFile();
 const InjectScriptName = {
   Format: "format",
   AddImage: "addImage",
+  ReplaceImage: "replaceImage",
   AddLink: "addLink",
   SetDefaultValue: "setDefaultValue",
   SetStyle: "setStyle",
@@ -498,6 +499,13 @@ class RNDraftView extends Component<PropTypes, DraftViewState> {
 
   addImage = (src: string) => {
     this.executeScript(InjectScriptName.AddImage, src);
+  };
+
+  replaceImage = (sourceSrc: string, targetSrc: string) => {
+    this.executeScript(
+      InjectScriptName.ReplaceImage,
+      JSON.stringify({ sourceSrc, targetSrc })
+    );
   };
 
   addLink = (text: string, url: string) => {

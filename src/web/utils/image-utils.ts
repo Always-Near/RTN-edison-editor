@@ -44,6 +44,59 @@ export function replaceImageSrc(info: {
   }
 }
 
+function downloadBlobImage(url: string) {
+  return new Promise<string>((resolve, reject) => {
+    fetch(url)
+      .then((res) => {
+        res
+          .blob()
+          .then((blob) => {
+            const reader = new FileReader();
+            reader.readAsDataURL(blob);
+            reader.onloadend = () => {
+              const base64data = reader.result as string;
+              resolve(base64data);
+            };
+          })
+          .catch((err) => {
+            reject(err);
+          });
+      })
+      .catch((err) => {
+        reject(err);
+      });
+  });
+}
+
+export function replaceImage(sourceSrc: string, targetSrc: string) {
+  const allImages = imageElements();
+  allImages.forEach((img) => {
+    if (img.getAttribute("src") === sourceSrc) {
+      img.setAttribute("src", targetSrc);
+    }
+  });
+}
+
+function onPastedImage(src: string | null) {
+  if (!src) {
+    return;
+  }
+  if (/^https?:\/\//.test(src)) {
+    // src does not rely on local images
+    return;
+  }
+  if (/^blob:/.test(src)) {
+    // pasted image in ios
+    downloadBlobImage(src).then((base64String) => {
+      replaceImage(src, base64String);
+      EventUtils.onPastedImage(base64String);
+    });
+    return;
+  }
+  // image is a local path or is a base64 image
+  EventUtils.onPastedImage(src);
+}
+
 export function detectPaste() {
   const oldImages = imageElements();
   setTimeout(function () {
@@ -59,8 +112,7 @@ export function detectPaste() {
       const newlineBefore = document.createElement("br");
       parent.insertBefore(newlineBefore, insertedImg);
       const src = insertedImg.getAttribute("src");
-      window.location.href = `addattachment:${src}`;
-      EventUtils.onPastedImage(src);
+      onPastedImage(src);
     }
     if (document.body.classList.contains("edison-dark")) {
       Theme.applyDarkModeInDraft();

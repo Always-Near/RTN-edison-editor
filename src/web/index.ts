@@ -2,7 +2,7 @@ import { FormatType } from "../constants";
 import EdoEditor from "./edo_editor";
 import $ from "./jQuery.js";
 import EventUtils from "./utils/event-utils";
-import { detectPaste } from "./utils/image-utils";
+import { detectPaste, replaceImage } from "./utils/image-utils";
 import StyleUtils from "./utils/style-utils";
 // import { placeCaretAtEnd } from "./utils/cursor-utils";
 import Theme from "./utils/theme-util";
@@ -60,6 +60,14 @@ window.addLink = (json: string) => {
 
 window.addImage = (src: string) => {
   EdoEditor.insertImage(src, "");
+};
+
+window.replaceImage = (params: string) => {
+  const { sourceSrc, targetSrc } = JSON.parse(params) as {
+    sourceSrc: string;
+    targetSrc: string;
+  };
+  replaceImage(sourceSrc, targetSrc);
 };
 
 window.setDefaultValue = (html: string) => {

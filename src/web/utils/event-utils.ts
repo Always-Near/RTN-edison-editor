@@ -100,10 +100,8 @@ class EventUtils {
     }
   };
 
-  onPastedImage = (src: string | null) => {
-    if (src) {
-      postMessage(EventName.OnPastedImage, src);
-    }
+  onPastedImage = (src: string) => {
+    this.postMessage(EventName.OnPastedImage, src);
   };
 
   log = (message: string) => {
