@@ -27,6 +27,7 @@ class EventUtils {
 
   onFocus = () => {
     this.postMessage(EventName.OnFocus, true);
+    this.onContentChangeDebounce();
   };
 
   onBlur = () => {
