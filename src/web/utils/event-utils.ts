@@ -49,7 +49,10 @@ class EventUtils {
     }
     if (selectElement.nodeType === Node.ELEMENT_NODE) {
       // should catch new line events
-      const e = selectElement as Element;
+      let e = selectElement as Element;
+      while (e.hasChildNodes()) {
+        e = e.firstChild as Element;
+      }
       return e.getBoundingClientRect().bottom + window.scrollY;
     }
   };
