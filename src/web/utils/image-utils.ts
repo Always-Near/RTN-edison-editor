@@ -75,6 +75,7 @@ export function replaceImage(sourceSrc: string, targetSrc: string) {
       img.setAttribute("src", targetSrc);
     }
   });
+  EventUtils.onContentChange();
 }
 
 function onPastedImage(src: string | null) {
