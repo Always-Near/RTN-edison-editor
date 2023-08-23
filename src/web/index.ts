@@ -1,6 +1,7 @@
 import { FormatType } from "../constants";
 import EdoEditor from "./edo_editor";
 import $ from "./jQuery.js";
+import { removeObject } from "./utils/base-utils";
 import EventUtils from "./utils/event-utils";
 import { detectPaste, replaceImage } from "./utils/image-utils";
 import StyleUtils from "./utils/style-utils";
@@ -37,6 +38,9 @@ document.body.onload = () => {
 
   containerBox?.addEventListener("paste", () => {
     detectPaste();
+    setTimeout(function () {
+      removeObject();
+    });
   });
 
   window.onfocus = () => {

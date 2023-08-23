@@ -22,3 +22,10 @@ export const formatColor = (color: string) => {
   const [r, g, b, a] = ns.map((n) => +n.trim());
   return `#${to16(r)}${to16(g)}${to16(b)}`;
 };
+
+export const removeObject = () => {
+  const objectNodes = document.getElementsByTagName("object");
+  Array.from(objectNodes).forEach((obj) => {
+    obj.remove();
+  });
+};
