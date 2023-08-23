@@ -1,7 +1,7 @@
 declare interface Window {
   ReactNativeWebView: any;
   format: (format: any) => void;
-  addImage: (path: string) => void;
+  addImage: (params: string) => void;
   replaceImage: (params: string) => void;
   addLink: (text: string, link: string) => void;
   setDefaultValue: (html: string) => void;

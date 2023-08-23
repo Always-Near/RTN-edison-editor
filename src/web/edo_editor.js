@@ -800,9 +800,11 @@ edo_editor.prepareInsert = function () {
   edo_editor.backupRange();
 };
 
-edo_editor.insertImage = function (url, alt) {
+edo_editor.insertImage = function ({ src, alt = "", width = 0, height = 0 }) {
   edo_editor.restoreRange();
-  var html = `<img src="${url}" alt="${alt}" style='width:100%; max-width:600px; height:auto;'/>`;
+  const widthString = width ? width + "px" : "100%";
+  const heightString = height ? height + "px" : "auto";
+  const html = `<img src="${src}" alt="${alt}" style='width:${widthString}; height:${heightString}; max-width:100%;'/>`;
   edo_editor.insertHTML(html);
 };
 

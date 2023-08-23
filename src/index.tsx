@@ -497,8 +497,13 @@ class RNDraftView extends Component<PropTypes, DraftViewState> {
     this.executeScript(InjectScriptName.Format, style);
   };
 
-  addImage = (src: string) => {
-    this.executeScript(InjectScriptName.AddImage, src);
+  addImage = (params: {
+    src: string;
+    alt?: string;
+    width?: number;
+    height?: number;
+  }) => {
+    this.executeScript(InjectScriptName.AddImage, JSON.stringify(params));
   };
 
   replaceImage = (sourceSrc: string, targetSrc: string) => {

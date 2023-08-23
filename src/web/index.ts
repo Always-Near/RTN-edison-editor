@@ -58,8 +58,14 @@ window.addLink = (json: string) => {
   EdoEditor.insertLink(url, text);
 };
 
-window.addImage = (src: string) => {
-  EdoEditor.insertImage(src, "");
+window.addImage = (params: string) => {
+  const paramsParse = JSON.parse(params) as {
+    src: string;
+    alt?: string;
+    width?: number;
+    height?: number;
+  };
+  EdoEditor.insertImage(paramsParse);
 };
 
 window.replaceImage = (params: string) => {
