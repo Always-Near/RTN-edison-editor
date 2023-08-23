@@ -295,6 +295,13 @@ class RNDraftView extends Component<PropTypes, DraftViewState> {
     });
   };
 
+  private formatOutputHTML = (html: string) => {
+    return html
+      .replace(/(\r\n|\n|\r)/gm, "")
+      .replace(/edo-dark-mode-override-color-\d+-\d+-\d+/gm, "")
+      .replace(/\sclass=""/gm, "");
+  };
+
   private onMessage = (event: WebViewMessageEvent) => {
     const {
       onEditorChange,
@@ -319,12 +326,9 @@ class RNDraftView extends Component<PropTypes, DraftViewState> {
         return;
       }
       if (type === EventName.EditorChange) {
-        this.setState(
-          { editorState: data.replace(/(\r\n|\n|\r)/gm, "") },
-          () => {
-            onEditorChange && onEditorChange(this.state.editorState);
-          }
-        );
+        this.setState({ editorState: this.formatOutputHTML(data) }, () => {
+          onEditorChange && onEditorChange(this.state.editorState);
+        });
         return;
       }
       if (type === EventName.ActiveStyleChange) {

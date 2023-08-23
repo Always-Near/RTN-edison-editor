@@ -1,5 +1,4 @@
 import { EventName } from "../../constants";
-import { debounce } from "./base-utils";
 import StyleUtils from "./style-utils";
 
 class EventUtils {
@@ -27,11 +26,12 @@ class EventUtils {
 
   onFocus = () => {
     this.postMessage(EventName.OnFocus, true);
-    this.onContentChangeDebounce();
+    this.onContentChange(false);
   };
 
   onBlur = () => {
     this.postMessage(EventName.OnBlur, true);
+    this.onContentChange(false);
   };
 
   private getSelectionPosition = () => {
@@ -72,25 +72,31 @@ class EventUtils {
     this.postMessage(EventName.ContentChange, true);
   };
 
-  private onContentChangeDebounce = debounce(() => {
+  private onEditorChange = () => {
     this.postMessage(
       EventName.EditorChange,
       document.getElementById("edo-container")?.innerHTML
     );
+  };
+
+  private onLayoutChange = () => {
     this.postMessage(EventName.SizeChange, document.body.offsetHeight);
     const pos = this.getSelectionPosition();
     if (pos) {
       this.postMessage(EventName.EditPosition, pos);
     }
-  }, 300);
+  };
 
   flagContentHasSet = () => {
     this.contentHasSetFlag = true;
   };
 
-  onContentChange = () => {
-    this.checkContentIsChange();
-    this.onContentChangeDebounce();
+  onContentChange = (changeFlag = true) => {
+    if (changeFlag) {
+      this.checkContentIsChange();
+    }
+    this.onEditorChange();
+    this.onLayoutChange();
   };
 
   onActiveStyleChange = (styles: string[]) => {
