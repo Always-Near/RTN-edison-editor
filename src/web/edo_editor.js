@@ -185,9 +185,9 @@ edo_editor.init = function () {
     // this line of code will cause performance issue when input extremely long text
     //        edo_editor.calculateEditorHeightWithCaretPosition();
     // workaround: following line is necessary to select the variable as a whole
-    if (sel.isCollapsed === false) {
-      edo_editor.getCaretYPosition();
-    }
+    // if (sel.isCollapsed === false) {
+    //   edo_editor.getCaretYPosition();
+    // }
     edo_editor.enabledEditingItems(e);
 
     if (edo_editor.isEditingSnippet) {
