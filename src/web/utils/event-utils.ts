@@ -80,11 +80,13 @@ class EventUtils {
   };
 
   private onLayoutChange = () => {
-    this.postMessage(EventName.SizeChange, document.body.offsetHeight);
-    const pos = this.getSelectionPosition();
-    if (pos) {
-      this.postMessage(EventName.EditPosition, pos);
-    }
+    setTimeout(() => {
+      this.postMessage(EventName.SizeChange, document.body.offsetHeight);
+      const pos = this.getSelectionPosition();
+      if (pos) {
+        this.postMessage(EventName.EditPosition, pos);
+      }
+    }, 100);
   };
 
   flagContentHasSet = () => {
@@ -96,6 +98,10 @@ class EventUtils {
       this.checkContentIsChange();
     }
     this.onEditorChange();
+    this.onLayoutChange();
+  };
+
+  onImageLoad = () => {
     this.onLayoutChange();
   };
 

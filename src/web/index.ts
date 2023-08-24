@@ -3,12 +3,22 @@ import EdoEditor from "./edo_editor";
 import $ from "./jQuery.js";
 import { removeObject } from "./utils/base-utils";
 import EventUtils from "./utils/event-utils";
-import { detectPaste, replaceImage } from "./utils/image-utils";
+import { detectPaste, replaceImage, addOnload } from "./utils/image-utils";
 import StyleUtils from "./utils/style-utils";
 // import { placeCaretAtEnd } from "./utils/cursor-utils";
 import Theme from "./utils/theme-util";
 
 const DefaultFontSize = 16;
+
+window.onerror = (
+  event: Event | string,
+  source?: string,
+  lineno?: number,
+  colno?: number,
+  error?: Error
+) => {
+  EventUtils.log("window error:" + error?.message);
+};
 
 $(document).ready(function () {
   // clean style on <html> tag which merged from inner <html> tag of origin mail while forwarding
@@ -82,6 +92,7 @@ window.replaceImage = (params: string) => {
 
 window.setDefaultValue = (html: string) => {
   EdoEditor.setHTML(decodeURIComponent(html));
+  addOnload();
   Theme.applyDark();
   setTimeout(() => {
     EventUtils.flagContentHasSet();
