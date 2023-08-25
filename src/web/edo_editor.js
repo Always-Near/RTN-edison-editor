@@ -377,7 +377,7 @@ edo_editor.backupRange = function () {
 edo_editor.restoreRange = function () {
   try {
     var selection = window.getSelection();
-    selection.removeAllRanges();
+    // selection.removeAllRanges();
     var range = document.createRange();
     range.setStart(
       edo_editor.currentSelection.startContainer,
