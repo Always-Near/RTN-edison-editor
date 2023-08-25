@@ -3,7 +3,7 @@ import EdoEditor from "./edo_editor";
 import $ from "./jQuery.js";
 import { removeObject } from "./utils/base-utils";
 import EventUtils from "./utils/event-utils";
-import { detectPaste, replaceImage, addOnload } from "./utils/image-utils";
+import { detectPaste, replaceImage, addImageOnload } from "./utils/image-utils";
 import StyleUtils from "./utils/style-utils";
 // import { placeCaretAtEnd } from "./utils/cursor-utils";
 import Theme from "./utils/theme-util";
@@ -92,7 +92,7 @@ window.replaceImage = (params: string) => {
 
 window.setDefaultValue = (html: string) => {
   EdoEditor.setHTML(decodeURIComponent(html));
-  addOnload();
+  addImageOnload();
   Theme.applyDark();
   setTimeout(() => {
     EventUtils.flagContentHasSet();

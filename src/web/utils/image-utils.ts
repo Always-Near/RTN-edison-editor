@@ -114,7 +114,7 @@ export function detectPaste() {
       parent.insertBefore(newlineBefore, insertedImg);
       const src = insertedImg.getAttribute("src");
       onPastedImage(src);
-      addOnload();
+      addImageOnload();
     }
     if (document.body.classList.contains("edison-dark")) {
       Theme.applyDarkModeInDraft();
@@ -137,7 +137,7 @@ export function findCIDImageURL() {
   return JSON.stringify(imgLinks);
 }
 
-export function addOnload() {
+export function addImageOnload() {
   const images = imageElements();
   // resize the editor height after image loaded
   images.forEach((ele) => {

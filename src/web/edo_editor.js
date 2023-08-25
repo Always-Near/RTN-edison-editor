@@ -375,18 +375,22 @@ edo_editor.backupRange = function () {
 };
 
 edo_editor.restoreRange = function () {
-  var selection = window.getSelection();
-  selection.removeAllRanges();
-  var range = document.createRange();
-  range.setStart(
-    edo_editor.currentSelection.startContainer,
-    edo_editor.currentSelection.startOffset
-  );
-  range.setEnd(
-    edo_editor.currentSelection.endContainer,
-    edo_editor.currentSelection.endOffset
-  );
-  selection.addRange(range);
+  try {
+    var selection = window.getSelection();
+    selection.removeAllRanges();
+    var range = document.createRange();
+    range.setStart(
+      edo_editor.currentSelection.startContainer,
+      edo_editor.currentSelection.startOffset
+    );
+    range.setEnd(
+      edo_editor.currentSelection.endContainer,
+      edo_editor.currentSelection.endOffset
+    );
+    selection.addRange(range);
+  } catch (error) {
+    EventUtils.log("edo_editor error:" + error?.message);
+  }
 };
 
 edo_editor.getSelectedNode = function () {
