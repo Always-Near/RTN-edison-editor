@@ -8,10 +8,7 @@ import {
   EmitterSubscription,
   Keyboard,
 } from "react-native";
-import WebView, {
-  WebViewMessageEvent,
-  WebViewProps,
-} from "react-native-webview";
+import WebView, { WebViewMessageEvent } from "react-native-webview";
 import RNFS from "react-native-fs";
 import {
   WebViewErrorEvent,
@@ -128,7 +125,7 @@ type PropTypes = {
 };
 
 type DraftViewState = {
-  webviewSource: WebViewProps["source"];
+  webviewUri: string;
   editorState: string;
   loading: boolean;
 };
@@ -149,7 +146,7 @@ class RNDraftView extends Component<PropTypes, DraftViewState> {
   constructor(props: any) {
     super(props);
     this.state = {
-      webviewSource: undefined,
+      webviewUri: "",
       editorState: "",
       loading: true,
     };
@@ -251,7 +248,7 @@ class RNDraftView extends Component<PropTypes, DraftViewState> {
   private getDraftJsFilePath = () => {
     this.maxCheckTime = this.maxCheckTime - 1;
     if (Variables.copyFinish) {
-      this.setState({ webviewSource: { uri: Variables.draftJsFilePath } });
+      this.setState({ webviewUri: Variables.draftJsFilePath });
       return;
     }
     if (this.maxCheckTime <= 0) {
@@ -540,7 +537,7 @@ class RNDraftView extends Component<PropTypes, DraftViewState> {
         <WebView
           ref={this.webViewRef}
           style={style}
-          source={this.state.webviewSource}
+          source={{ uri: this.state.webviewUri }}
           hideKeyboardAccessoryView
           allowFileAccess
           allowingReadAccessToURL={"file://"}
