@@ -56,11 +56,6 @@ edo_editor.placeholder = "Placeholder";
 edo_editor.zeroWidthSpaceNode = null;
 edo_editor.zeroWidthSpaceCharacter = "\u200b"; // 8203 or 200b
 
-edo_editor.setPredefinedVariables = function (jsonStr) {
-  var obj = eval(jsonStr);
-  predefinedVariables = obj;
-};
-
 /**
  * This is a workaround for a bug in WebKit, maybe relate to https://bugs.webkit.org/show_bug.cgi?id=158115
  * Fix bug: unable to enter use both underline and strikeThrough formats
@@ -182,12 +177,7 @@ edo_editor.init = function () {
     }
 
     edo_editor.backupRange(); // backup-restore mechanism to avoid select part of the Variable, here is the backup step
-    // this line of code will cause performance issue when input extremely long text
-    //        edo_editor.calculateEditorHeightWithCaretPosition();
-    // workaround: following line is necessary to select the variable as a whole
-    // if (sel.isCollapsed === false) {
-    //   edo_editor.getCaretYPosition();
-    // }
+
     edo_editor.enabledEditingItems(e);
 
     if (edo_editor.isEditingSnippet) {
@@ -299,22 +289,17 @@ edo_editor.init = function () {
     // should remove the zero-width-space which stands as placeholder of new span while canceling hiliteColor
     var sel = window.getSelection();
     var prevSiblingNode = sel.anchorNode.previousElementSibling;
+    var node = $(prevSiblingNode);
     if (
       sel.anchorNode.nodeName.toLowerCase() === "#text" &&
       sel.anchorNode.textContent.charCodeAt(0) === 8203 &&
-      !$(prevSiblingNode).hasClass(edo_editor.templateVariableClassName) &&
-      prevSiblingNode.style.getPropertyValue("background-color") ===
-        "rgb(255, 255, 141)"
+      !node.hasClass(edo_editor.templateVariableClassName) &&
+      node.hasClass("no-background")
     ) {
       sel.anchorNode.deleteData(0, 1);
     }
   });
 }; //end
-
-// This will show up in the XCode console as we are able to push this into an NSLog.
-edo_editor.debug = function (msg) {
-  window.location = "debug://" + msg;
-};
 
 edo_editor.setPlaceholder = function (placeholder) {
   var editor = $("#edo-container");
@@ -329,38 +314,6 @@ edo_editor.setPlaceholder = function (placeholder) {
       element.empty();
     }
   });
-};
-
-edo_editor.getCaretYPosition = function () {
-  var sel = window.getSelection();
-  // Next line is commented to prevent deselecting selection.
-  // It looks like work but if there are any issues will appear then uncomment it as well as code above.
-  //sel.collapseToStart();
-  var range = sel.getRangeAt(0);
-  var span = document.createElement("span"); // something happening here preventing selection of elements
-  range.collapse(false);
-  range.insertNode(span);
-  var topPosition = span.offsetTop;
-  span.parentNode.removeChild(span);
-  return topPosition;
-};
-
-edo_editor.calculateEditorHeightWithCaretPosition = function () {
-  var padding = 50;
-  var c = edo_editor.getCaretYPosition();
-
-  var offsetY = window.document.body.scrollTop;
-  var height = edo_editor.contentHeight;
-
-  var newPos = window.pageYOffset;
-
-  if (c < offsetY) {
-    newPos = c;
-  } else if (c > offsetY + height - padding) {
-    newPos = c - height + padding - 18;
-  }
-
-  window.scrollTo(0, newPos);
 };
 
 edo_editor.backupRange = function () {
@@ -694,8 +647,12 @@ edo_editor.setBackgroundColor = function (color) {
 
   // canceling hiliteColor, append an empty <span> node with zero-width-space content, otherwise cannot move selection in it
   if (color === "rgb(0, 0, 0, 0)" && window.getSelection().isCollapsed) {
-    var node = document.createTextNode("\u200b");
-    $(edo_editor.getSelectedNode()).after(node);
+    var node = document.createElement("span");
+    var text = document.createTextNode("\u200b");
+    node.appendChild(text);
+    $(node).addClass("no-background");
+    $(node).css("backgroundColor", "#fff");
+    edo_editor.getSelectedNode().appendChild(node);
 
     var range = document.createRange();
     range.selectNode(node);
@@ -905,15 +862,37 @@ edo_editor.enabledEditingItems = function (e) {
 
   // Background Color
   var bgColor = t.css("backgroundColor");
-  if (
-    bgColor.length !== 0 &&
-    bgColor !== "rgba(0, 0, 0, 0)" &&
-    bgColor !== "rgb(0, 0, 0)" &&
-    bgColor !== "rgb(255,255,141)" &&
-    bgColor !== "rgb(255, 255, 255)" &&
-    bgColor !== "transparent"
-  ) {
-    items.push("backgroundColor");
+  var noBackground = t.hasClass("no-background");
+  if (!noBackground) {
+    if (
+      bgColor.length !== 0 &&
+      bgColor !== "rgba(0, 0, 0, 0)" &&
+      bgColor !== "rgb(0, 0, 0)" &&
+      bgColor !== "rgb(255,255,141)" &&
+      bgColor !== "rgb(255, 255, 255)" &&
+      bgColor !== "transparent"
+    ) {
+      items.push("backgroundColor");
+    } else {
+      const parent = t.parents("[style*=background-color]");
+      if (
+        parent &&
+        parent.parents("#edo-container").length > 0 &&
+        parent.parents(".edo-composer").length > 0
+      ) {
+        const parentBgColor = parent && parent.css("backgroundColor");
+        if (
+          parentBgColor.length !== 0 &&
+          parentBgColor !== "rgba(0, 0, 0, 0)" &&
+          parentBgColor !== "rgb(0, 0, 0)" &&
+          parentBgColor !== "rgb(255,255,141)" &&
+          parentBgColor !== "rgb(255, 255, 255)" &&
+          parentBgColor !== "transparent"
+        ) {
+          items.push("backgroundColor");
+        }
+      }
+    }
   }
 
   // should use "queryCommandValue" instead of "t.css('font-size')"
@@ -958,7 +937,7 @@ edo_editor.enabledEditingItems = function (e) {
   if (nodeName === "blockquote") {
     items.push("indent");
   }
-
+  console.log(items);
   // start callback
   if (items.length > 0) {
     EventUtils.onActiveStyleChange(items);
@@ -1073,57 +1052,6 @@ edo_editor.blurVariable = function () {
   sel.addRange(range);
 };
 
-edo_editor.createVariable = function () {
-  var variableElement = document.createElement("span");
-  if (window.getSelection().isCollapsed)
-    variableElement.innerHTML = "\u200b" + edo_editor.placeholder;
-  else {
-    variableElement.innerHTML =
-      "\u200b" +
-      window.getSelection().getRangeAt(0).cloneContents().firstChild
-        .textContent;
-    window.getSelection().deleteFromDocument();
-  }
-
-  var att = document.createAttribute("class");
-  att.value = edo_editor.templateVariableClassName;
-  variableElement.setAttributeNode(att);
-
-  edo_editor.insertNodeAtCaret(variableElement);
-  var textChildNodes = edo_editor.getSelectedNode().childNodes;
-  var lastChlldNode = textChildNodes[textChildNodes.length - 1];
-  var range = document.createRange();
-  range.setStart(textChildNodes[0], 1);
-  range.setEnd(lastChlldNode, lastChlldNode.length);
-  var sel = window.getSelection();
-  sel.removeAllRanges();
-  sel.addRange(range);
-
-  var prevSibling = variableElement.previousSibling;
-  if (prevSibling && prevSibling.nodeName.toLowerCase() === "#text") {
-    if (
-      prevSibling.length === 0 ||
-      prevSibling.textContent.charCodeAt(prevSibling.length - 1) !== 160
-    ) {
-      var spaceBefore = document.createTextNode("\u00A0");
-      $(variableElement).before(spaceBefore);
-    }
-  }
-
-  var spaceAfter = document.createTextNode("\u00A0");
-  $(variableElement).after(spaceAfter);
-
-  var zeroWidthSpaceElement = edo_editor.createZeroWidthSpace();
-
-  // insert zero-width-space after variableElement
-  variableElement.parentNode.insertBefore(
-    zeroWidthSpaceElement,
-    variableElement.nextSibling
-  );
-
-  edo_editor.isFocusingVariable = true;
-};
-
 // zero width space. https://en.wikipedia.org/wiki/Zero-width_space
 edo_editor.createZeroWidthSpace = function () {
   return document.createTextNode("\u200B");
@@ -1152,31 +1080,6 @@ edo_editor.insertNodeAtCaret = function (node) {
     range.collapse(false);
     sel.removeAllRanges();
     sel.addRange(range);
-  }
-};
-
-edo_editor.createPredefinedVariable = function (predefinedVariableKey) {
-  var selectedNode = edo_editor.getSelectedNode();
-  if (!$(selectedNode).hasClass(edo_editor.templateVariableClassName)) {
-    console.log("current node is not a Variable, should not replace.");
-    return;
-  }
-
-  if (predefinedVariables[predefinedVariableKey] !== null) {
-    selectedNode.innerText = predefinedVariables[predefinedVariableKey];
-    edo_editor.blurVariable();
-
-    selectedNode.setAttribute("contentEditable", "false");
-
-    if (edo_editor.isEditingSnippet) {
-      // work around to avoid conflict against 'callback://'
-      setTimeout(function () {
-        window.location.href = "variable://blur";
-      }, 100);
-      edo_editor.isFocusingVariable = false;
-    }
-  } else {
-    console.log("unexpected predefinedVariableKey: " + predefinedVariableKey);
   }
 };
 

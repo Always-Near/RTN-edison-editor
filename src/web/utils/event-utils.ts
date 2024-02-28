@@ -35,14 +35,19 @@ class EventUtils {
   };
 
   private getSelectionPosition = () => {
-    // returns a value of 0 on empty lines
-    const pos = window
-      .getSelection()
-      ?.getRangeAt(0)
-      .getBoundingClientRect()?.bottom;
-    if (pos) {
-      return pos + window.scrollY;
+    try {
+      // returns a value of 0 on empty lines
+      const pos = window
+        .getSelection()
+        ?.getRangeAt(0)
+        ?.getBoundingClientRect()?.bottom;
+      if (pos) {
+        return pos + window.scrollY;
+      }
+    } catch (err) {
+      // pass
     }
+
     // should catch new line events
     const selectElement = window.getSelection()?.focusNode;
     if (!selectElement) {
